@@ -37,20 +37,20 @@ class RbtNode{
 
     //accessor and mutators
 
-    private int getData(){return data;}
-    private void setData(int data){ this.data = data;}
+    public int getData(){return data;}
+    public void setData(int data){ this.data = data;}
 
     public int getColor(){ return color;}
-    public int setColor(int color){ this.color = color;}
+    public void setColor(int color){ this.color = color;}
 
     public RbtNode getLeft(){ return left;}
-    public RbtNode setLeft(RbtNode left){ this.left = left;}
+    public void setLeft(RbtNode left){ this.left = left;}
 
     public RbtNode getRight(){ return right;}
-    public RbtNode setRight(RbtNode right){ this.right = right;}
+    public void setRight(RbtNode right){ this.right = right;}
  
     public RbtNode getParent(){ return parent;}
-    public RbtNode setParent(RbtNode parent){ this.parent = parent;}
+    public void setParent(RbtNode parent){ this.parent = parent;}
 
     //helper methods
 
@@ -89,10 +89,42 @@ public class Rbt {
 
     //insert(value)
 
-    public void insert(value)
+    public void insert(int value){
+        RbtNode node = new RbtNode(value);
+
+        //if empty tree
+        if (root == null){
+            node.setColor(RbtNode.CL_BLACK);
+            root = node;
+            return;
+        }
+
+        //Go to leaf
+        RbtNode parent = null;
+        RbtNode current = root;
+
+        while (current != null){
+            parent = current;
+            if (node.getData() < current.getData()) current = current.getLeft();
+            else if (node.getData() > current.getData()) current = current.getRight();
+            return;
+        }
+
+        //link leaf to parent
+        node.setParent(parent);
+        if (node.getData() < parent.getData()) parent.setLeft(node);
+        else parent.setRight(node);
+
+
+        
+
+
+
+
+    }
 
     //search(value)
-    public boolean search(value){
+    public boolean search(RbtNode value){
 
         return false;
     }
@@ -115,6 +147,37 @@ public class Rbt {
     //inorder()
     public int inorder(){
 
+    }
+
+
+
+    //helper function
+
+    private void leftRotate(RbtNode x){
+        RbtNode y = x.getRight();
+        x.setRight(y.getLeft());
+        if (y.getLeft() != null) y.getLeft().setParent(x);
+        y.setParent(x.getParent());
+        if (x.getParent() == null) this.root = y;
+        else if (x == x.getParent().getLeft()) x.getParent().setLeft(y);
+        else x.getParent().setRight(y);
+        y.setLeft(x);
+        x.setParent(y);
+        
+    }
+
+
+    private void rightRotate(RbtNode x){
+        RbtNode y = x.getLeft();
+        x.setRight(y.getLeft());
+        if (y.getRight() != null) y.getRight().setParent(x);
+        y.setParent(x.getParent());
+        if (x.getParent() == null) this.root = y;
+        else if (x == x.getParent().getRight()) x.getParent().setRight(y);
+        else x.getParent().setLeft(y);
+        y.setRight(x);
+        x.setParent(y);
+        
     }
 
 }
