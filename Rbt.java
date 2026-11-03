@@ -83,6 +83,7 @@ class RbtNode{
 public class Rbt {
     //Fields
     public RbtNode root;
+    private String inorderStr = "";
 
 
     //methods (all public)
@@ -197,13 +198,31 @@ public class Rbt {
 
     //size()
     public int size(){
-
+        return sizeHelper(root);
     }
+
+    private int sizeHelper(RbtNode node){
+        if (node == null) return 0;
+        return 1 + sizeHelper(node.getLeft()) + sizeHelper(node.getRight());
+    }
+
 
     //inorder()
-    public int inorder(){
-
+    public String inorder(){
+        inorderStr = "";
+        inorderHelper(root);
+        return inorderStr;
     }
+
+    //helper inorder
+    private void inorderHelper(RbtNode node){
+        if (node != null){
+            inorderHelper(node.getLeft());
+            inorderStr += node.getData() + " ";
+            inorderHelper(node.getRight());
+        }
+    }
+
 
 
 
