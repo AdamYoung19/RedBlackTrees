@@ -105,7 +105,7 @@ public class Rbt {
 
         while (current != null){
             parent = current;
-            if (node.getData() < current.getData()) current = current.getLeft();
+            if (node.getData() < current.getData()) current = cu   rrent.getLeft();
             else if (node.getData() > current.getData()) current = current.getRight();
             return;
         }
@@ -115,7 +115,7 @@ public class Rbt {
         if (node.getData() < parent.getData()) parent.setLeft(node);
         else parent.setRight(node);
 
-
+        fixInsert(node);
         
 
 
@@ -123,20 +123,76 @@ public class Rbt {
 
     }
 
-    //search(value)
-    public boolean search(RbtNode value){
+    //Helper fix insert
+    public void fixInsert(RbtNode k){
+        while (k.getParent() != null && k.getParent().getColor() == RbtNode.CL_RED){
+            RbtNode uncle = k.getUncle();
+            RbtNode gp = k.getGrandParent();
+            RbtNode parent = k.getParent();
 
+
+            //case 1: parent is left of gp
+            if (parent == gp.getLeft()){
+                //case 1a: uncle is red
+                if (uncle != null && uncle.getColor() == RbtNode.CL_RED){
+                    parent.setColor(RbtNode.CL_BLACK);
+                    uncle.setColor(RbtNode.CL_BLACK);
+                    gp.setColor(RbtNode.CL_RED);
+                    k = gp;
+                } else {
+                    //case 1ba: uncle is black, k is right child
+                    if (k == parent.getRight()) {
+                        k = parent;
+                        rightRotate(k);
+                        parent = k.getParent();
+                    }
+                    //case 1bb: uncle is black, k is left child
+                    parent.setColor(RbtNode.CL_BLACK);
+                    gp.setColor(RbtNode.CL_RED);
+                    leftRotate(gp);
+
+                }
+            }
+        }
+        root.setColor(RbtNode.CL_BLACK);
+    }
+
+    //search(value)
+    public boolean search(int value){
+        RbtNode current = root;
+
+        while (current != null) {
+            if (value == current.getData()){
+                return true;
+            } else if (value < current.getData()){
+                current = current.getLeft();
+            } else {
+                current = current.getRight();
+            }
+        }
         return false;
     }
 
     //min()
     public int min(){
+        if (root == null) return -1;
 
+        RbtNode current = root;
+        while (current.getLeft() != null) {
+            current = current.getLeft();
+        }
+        return current.getData();
     }
 
     //max()
     public int max(){
+        if (root == null) return -1;
 
+        RbtNode current = root;
+        while (current.getRight() != null) {
+            current = current.getRight();
+        }
+        return current.getData();
     }
 
     //size()
