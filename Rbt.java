@@ -7,9 +7,9 @@ class RbtNode{
 
 
     //colors (black or red)
-    private int color;
-    public static final int CL_RED = 0;
-    public static final int CL_BLACK = 1;
+    private byte color;
+    public static final byte CL_RED = 0;
+    public static final byte CL_BLACK = 1;
 
 
     //left right nodes
@@ -40,8 +40,8 @@ class RbtNode{
     public int getData(){return data;}
     public void setData(int data){ this.data = data;}
 
-    public int getColor(){ return color;}
-    public void setColor(int color){ this.color = color;}
+    public byte getColor(){ return color;}
+    public void setColor(byte color){ this.color = color;}
 
     public RbtNode getLeft(){ return left;}
     public void setLeft(RbtNode left){ this.left = left;}
@@ -106,9 +106,9 @@ public class Rbt {
 
         while (current != null){
             parent = current;
-            if (node.getData() < current.getData()) current = cu   rrent.getLeft();
+            if (node.getData() < current.getData()) current = current.getLeft();
             else if (node.getData() > current.getData()) current = current.getRight();
-            return;
+            else return;
         }
 
         //link leaf to parent
@@ -148,6 +148,28 @@ public class Rbt {
                         parent = k.getParent();
                     }
                     //case 1bb: uncle is black, k is left child
+                    parent.setColor(RbtNode.CL_BLACK);
+                    gp.setColor(RbtNode.CL_RED);
+                    leftRotate(gp);
+
+                }
+            }
+            //case 2: parent is right of gp
+            else {
+                //case 2a: uncle is red
+                if (uncle != null && uncle.getColor() == RbtNode.CL_RED){
+                    parent.setColor(RbtNode.CL_BLACK);
+                    uncle.setColor(RbtNode.CL_BLACK);
+                    gp.setColor(RbtNode.CL_RED);
+                    k = gp;
+                } else {
+                    //case 2ba: uncle is black, k is left child
+                    if (k == parent.getLeft()) {
+                        k = parent;
+                        rightRotate(k);
+                        parent = k.getParent();
+                    }
+                    //case 2bb: uncle is black, k is right child
                     parent.setColor(RbtNode.CL_BLACK);
                     gp.setColor(RbtNode.CL_RED);
                     leftRotate(gp);
@@ -225,8 +247,41 @@ public class Rbt {
 
 
 
+    //************ /* 
+    //BONUS: DELETE FUNCTION
+   /*
+    public void delete(int value){
+        RbtNode node = root;
 
-    //helper function
+
+        //find the node
+        while (node != null && node.getData() != value){
+            if (value < node.getData()) node = node.getLeft();
+            else node = node.getRight();
+        }
+
+        //if not found
+        if (node == null) return;
+
+
+
+        //case 1: node has no children
+
+        
+
+
+        //case 2: node has one child
+
+
+        //case 3: node has two children
+
+
+    }  */
+
+    //************ 
+
+
+    //helper rotation functions
 
     private void leftRotate(RbtNode x){
         RbtNode y = x.getRight();
@@ -244,7 +299,7 @@ public class Rbt {
 
     private void rightRotate(RbtNode x){
         RbtNode y = x.getLeft();
-        x.setRight(y.getLeft());
+        x.setLeft(y.getRight());
         if (y.getRight() != null) y.getRight().setParent(x);
         y.setParent(x.getParent());
         if (x.getParent() == null) this.root = y;
